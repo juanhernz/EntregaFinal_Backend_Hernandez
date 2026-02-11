@@ -1,0 +1,15 @@
+[
+  {
+    "id": 1,
+    "title": "Remera",
+    "description": "Algodón",
+    "code": "REM-01",
+    "price": 12000,
+    "status": true,
+    "stock": 10,
+    "category": "ropa",
+    "thumbnails": [
+      "img1.png"
+    ]
+  }
+]

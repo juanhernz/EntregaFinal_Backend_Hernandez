@@ -9,6 +9,8 @@
     "dev": "node --watch src/app.js"
   },
   "dependencies": {
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "express-handlebars": "^8.0.6",
+    "socket.io": "^4.8.3"
   }
 }

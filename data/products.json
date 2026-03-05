@@ -11,5 +11,16 @@
     "thumbnails": [
       "img1.png"
     ]
+  },
+  {
+    "id": 3,
+    "title": "zapatillas",
+    "description": "test",
+    "code": "0.6258205482892027",
+    "price": 18000,
+    "status": true,
+    "stock": 10,
+    "category": "general",
+    "thumbnails": []
   }
 ]

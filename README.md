@@ -1,156 +1,263 @@
-# 🛒 Backend - Entrega 1 (Products & Carts API)
+# Entrega Final - Backend Ecommerce
 
-Servidor backend desarrollado con **Node.js** y **Express** que permite gestionar productos y carritos de compra mediante una API REST, con persistencia en archivos JSON.
+## Descripción
+
+Proyecto final de backend para un ecommerce desarrollado con Node.js y Express.
+
+La aplicación implementa una API REST completa para gestión de productos y carritos, renderizado de vistas dinámicas con Handlebars, persistencia en MongoDB Atlas y actualización en tiempo real mediante WebSockets con Socket.io.
+
+## Funcionalidades principales
+
+* Gestión completa de productos (CRUD)
+* Gestión completa de carritos
+* Persistencia en MongoDB Atlas
+* Paginación de productos
+* Filtros por categoría o disponibilidad
+* Ordenamiento por precio
+* Populate de productos dentro de carritos
+* Renderizado de vistas con Handlebars
+* Actualización en tiempo real de productos con WebSockets
 
 ---
 
-## 🚀 Tecnologías usadas
+## Tecnologías utilizadas
 
-- Node.js  
-- Express  
-- File System (fs/promises)  
+* Node.js
+* Express
+* MongoDB Atlas
+* Mongoose
+* Mongoose Paginate V2
+* Express Handlebars
+* Socket.io
+* Dotenv
 
 ---
 
-## ⚙️ Instalación
+## Instalación
 
-1. Clonar el repositorio:
-```bash
-git clone <URL_DEL_REPO>
-```
+### 1. Clonar repositorio
 
-2. Entrar al proyecto:
-```bash
-cd nombre-del-proyecto
-```
+git clone TU_REPO_URL
 
-3. Instalar dependencias:
-```bash
+### 2. Ingresar al proyecto
+
+cd NOMBRE_DEL_PROYECTO
+
+### 3. Instalar dependencias
+
 npm install
-```
 
-4. Ejecutar servidor:
-```bash
+### 4. Crear archivo `.env`
+
+En la raíz del proyecto crear:
+
+MONGO_URI=your_mongodb_connection_string
+PORT=8080
+
+### 5. Ejecutar servidor
+
+Modo desarrollo:
+
 npm run dev
-```
 
-Servidor corriendo en:
+Modo normal:
 
-```
+npm start
+
+---
+
+## Acceso al servidor
+
+Servidor local:
+
 http://localhost:8080
-```
 
 ---
 
-## 📂 Persistencia
+## Estructura del proyecto
 
-Los datos se almacenan en archivos:
-
-```
-/data/products.json
-/data/carts.json
-```
+src
+├── app.js
+├── models
+│ ├── Product.model.js
+│ └── Cart.model.js
+├── routes
+│ ├── products.router.js
+│ ├── carts.router.js
+│ └── views.router.js
+├── views
+│ ├── layouts
+│ │ └── main.handlebars
+│ ├── home.handlebars
+│ ├── realTimeProducts.handlebars
+│ ├── products.handlebars
+│ ├── productDetail.handlebars
+│ └── cartDetail.handlebars
+├── public
+│ └── js
+│ └── realtime.js
 
 ---
 
-## 📌 Endpoints
+## Vistas disponibles
 
-### 🛒 Products
+### Home
 
-Base URL:
-```
-/api/products
-```
+GET /
 
-#### Obtener todos los productos
-```
+Renderiza productos cargados desde base de datos.
+
+---
+
+### Productos en tiempo real
+
+GET /realtimeproducts
+
+Permite:
+
+* agregar productos
+* eliminar productos
+
+La lista se actualiza automáticamente mediante Socket.io.
+
+---
+
+### Productos paginados
+
+GET /products
+
+Permite:
+
+* paginación
+* ordenamiento
+* filtros
+
+Parámetros disponibles:
+
+* limit
+* page
+* sort
+* query
+
+Ejemplo:
+
+/products?limit=5&page=1&sort=asc&query=category
+
+---
+
+### Detalle de producto
+
+GET /products/:pid
+
+Muestra detalle individual del producto.
+
+---
+
+### Vista de carrito
+
+GET /carts/:cid
+
+Muestra carrito con productos poblados mediante populate.
+
+---
+
+## API REST
+
+## Productos
+
+### Obtener productos
+
 GET /api/products
-```
 
-#### Obtener producto por ID
-```
+### Obtener producto por ID
+
 GET /api/products/:pid
-```
 
-#### Crear producto
-```
+### Crear producto
+
 POST /api/products
-```
 
-Body ejemplo:
+### Actualizar producto
 
-```json
-{
-  "title": "Remera",
-  "description": "Algodón",
-  "code": "REM-01",
-  "price": 12000,
-  "status": true,
-  "stock": 10,
-  "category": "ropa",
-  "thumbnails": ["img1.png"]
-}
-```
-
-#### Actualizar producto
-```
 PUT /api/products/:pid
-```
 
-Body ejemplo:
+### Eliminar producto
 
-```json
-{
-  "price": 15000,
-  "stock": 5
-}
-```
-
-#### Eliminar producto
-```
 DELETE /api/products/:pid
-```
 
 ---
 
-### 🛒 Carts
+## Carritos
 
-Base URL:
-```
-/api/carts
-```
+### Crear carrito
 
-#### Crear carrito
-```
 POST /api/carts
-```
 
-#### Obtener carrito por ID
-```
+### Obtener carrito
+
 GET /api/carts/:cid
-```
 
-#### Agregar producto al carrito
-```
-POST /api/carts/:cid/product/:pid
-```
+### Agregar producto al carrito
 
-Si el producto ya existe en el carrito, se incrementa automáticamente su cantidad.
+POST /api/carts/:cid/products/:pid
+
+### Eliminar producto del carrito
+
+DELETE /api/carts/:cid/products/:pid
+
+### Reemplazar carrito completo
+
+PUT /api/carts/:cid
+
+### Actualizar cantidad de producto
+
+PUT /api/carts/:cid/products/:pid
+
+### Vaciar carrito
+
+DELETE /api/carts/:cid
 
 ---
 
-## ✅ Funcionalidades
+## WebSockets
 
-- CRUD completo de productos  
-- Creación y consulta de carritos  
-- Persistencia en archivos JSON  
-- IDs autogenerados  
-- Uso de routers de Express  
+Implementado en:
+
+GET /realtimeproducts
+
+Eventos disponibles:
+
+* addProduct
+* deleteProduct
 
 ---
 
-## 📎 Notas
+## Base de datos
 
-- No incluye implementación visual.  
-- Probado mediante Postman.  
-- No se incluye carpeta `node_modules` en el repositorio.
+Base utilizada: MongoDB Atlas
+
+Colecciones:
+
+* products
+* carts
+
+---
+
+## Variables de entorno
+
+Archivo `.env`
+
+MONGO_URI=your_mongodb_connection_string
+PORT=8080
+
+---
+
+## Notas
+
+El proyecto utiliza MongoDB Atlas, por lo tanto es necesario configurar correctamente la cadena de conexión antes de ejecutar.
+
+---
+
+## Autor
+
+Juan Hernandez

@@ -9,7 +9,7 @@ socket.on("products", (products) => {
     products.forEach(p => {
 
         const li = document.createElement("li")
-        li.innerText = `${p.id} - ${p.title} - $${p.price}`
+        li.innerText = `${p._id} - ${p.title} - $${p.price}`
 
         list.appendChild(li)
 

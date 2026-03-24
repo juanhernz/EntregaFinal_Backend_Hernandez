@@ -74,31 +74,6 @@ http://localhost:8080
 
 ---
 
-## Estructura del proyecto
-
-src
-├── app.js
-├── models
-│ ├── Product.model.js
-│ └── Cart.model.js
-├── routes
-│ ├── products.router.js
-│ ├── carts.router.js
-│ └── views.router.js
-├── views
-│ ├── layouts
-│ │ └── main.handlebars
-│ ├── home.handlebars
-│ ├── realTimeProducts.handlebars
-│ ├── products.handlebars
-│ ├── productDetail.handlebars
-│ └── cartDetail.handlebars
-├── public
-│ └── js
-│ └── realtime.js
-
----
-
 ## Vistas disponibles
 
 ### Home

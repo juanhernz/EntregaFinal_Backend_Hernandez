@@ -6,10 +6,56 @@ const router = Router()
 // GET /api/products
 router.get("/", async (req, res) => {
   try {
-    const products = await Product.find()
-    res.json({ status: "success", payload: products })
+    const { limit = 10, page = 1, sort, query } = req.query
+
+    let filter = {}
+
+    if (query) {
+      if (query === "true" || query === "false") {
+        filter.status = query === true || query === "true"
+      } else {
+        filter.category = query
+      }
+    }
+
+    let options = {
+      page: parseInt(page),
+      limit: parseInt(limit),
+      lean: true
+    }
+
+    if (sort === "asc") {
+      options.sort = { price: 1 }
+    }
+
+    if (sort === "desc") {
+      options.sort = { price: -1 }
+    }
+
+    const result = await Product.paginate(filter, options)
+
+    res.json({
+      status: "success",
+      payload: result.docs,
+      totalPages: result.totalPages,
+      prevPage: result.prevPage,
+      nextPage: result.nextPage,
+      page: result.page,
+      hasPrevPage: result.hasPrevPage,
+      hasNextPage: result.hasNextPage,
+      prevLink: result.hasPrevPage
+        ? `/api/products?page=${result.prevPage}`
+        : null,
+      nextLink: result.hasNextPage
+        ? `/api/products?page=${result.nextPage}`
+        : null
+    })
+
   } catch (error) {
-    res.status(500).json({ status: "error", error: error.message })
+    res.status(500).json({
+      status: "error",
+      error: error.message
+    })
   }
 })
 
@@ -19,13 +65,22 @@ router.get("/:pid", async (req, res) => {
     const product = await Product.findById(req.params.pid)
 
     if (!product) {
-      return res.status(404).json({ status: "error", error: "Product not found" })
+      return res.status(404).json({
+        status: "error",
+        error: "Product not found"
+      })
     }
 
-    res.json({ status: "success", payload: product })
+    res.json({
+      status: "success",
+      payload: product
+    })
 
   } catch (error) {
-    res.status(500).json({ status: "error", error: error.message })
+    res.status(500).json({
+      status: "error",
+      error: error.message
+    })
   }
 })
 
@@ -40,7 +95,10 @@ router.post("/", async (req, res) => {
     })
 
   } catch (error) {
-    res.status(400).json({ status: "error", error: error.message })
+    res.status(400).json({
+      status: "error",
+      error: error.message
+    })
   }
 })
 
@@ -54,7 +112,10 @@ router.put("/:pid", async (req, res) => {
     )
 
     if (!updatedProduct) {
-      return res.status(404).json({ status: "error", error: "Product not found" })
+      return res.status(404).json({
+        status: "error",
+        error: "Product not found"
+      })
     }
 
     res.json({
@@ -63,7 +124,10 @@ router.put("/:pid", async (req, res) => {
     })
 
   } catch (error) {
-    res.status(400).json({ status: "error", error: error.message })
+    res.status(400).json({
+      status: "error",
+      error: error.message
+    })
   }
 })
 
@@ -73,7 +137,10 @@ router.delete("/:pid", async (req, res) => {
     const deletedProduct = await Product.findByIdAndDelete(req.params.pid)
 
     if (!deletedProduct) {
-      return res.status(404).json({ status: "error", error: "Product not found" })
+      return res.status(404).json({
+        status: "error",
+        error: "Product not found"
+      })
     }
 
     res.json({
@@ -82,7 +149,10 @@ router.delete("/:pid", async (req, res) => {
     })
 
   } catch (error) {
-    res.status(500).json({ status: "error", error: error.message })
+    res.status(500).json({
+      status: "error",
+      error: error.message
+    })
   }
 })
 
